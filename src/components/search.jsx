@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { useGamesContext } from "../context/useGamesContext";
 
 function Search() {
-  const { inputValue, setInputValue, setSearchTerm } = useGamesContext();
+  const { filter, setFilter } = useGamesContext();
+
+  const [inputValue, setInputValue] = useState("");
 
   const handleOnChange = (e) => {
     const { value } = e.target;
@@ -10,7 +13,7 @@ function Search() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSearchTerm(inputValue);
+    setFilter({...filter, searchTerm: inputValue});
   };
 
   return (

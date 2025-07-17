@@ -2,7 +2,8 @@ import Search from "../components/search";
 import { useGamesContext } from "../context/useGamesContext";
 
 function Games() {
-  const { isLoading, games, error } = useGamesContext();
+  const { isLoading, games, error, loadMore, isLoadLimitReached } =
+    useGamesContext();
 
   return (
     <>
@@ -24,7 +25,6 @@ function Games() {
           ))}
         </section>
       )}
-
       {isLoading && (
         <section className="w-full gap-4 grid grid-cols-[repeat(auto-fill,_minmax(15em,_1fr))]">
           {Array.from({ length: 15 }).map((_, i) => (
@@ -35,7 +35,20 @@ function Games() {
           ))}
         </section>
       )}
-
+      {!isLoading && (
+        <button
+          type="button"
+          className={`mt-4 bg-teal-600 text-white px-4 py-2 rounded border border-teal-600 w-full md:w-auto focus-visible:outline-0 ${
+            isLoadLimitReached
+              ? "cursor-not-allowed opacity-45"
+              : "cursor-pointer hover:bg-white hover:text-teal-600 transition-colors duration-300"
+          }`}
+          onClick={loadMore}
+          disabled={isLoadLimitReached}
+        >
+          Load More
+        </button>
+      )}
       {error && (
         <h1 className="text-red-600 font-semibold mt-4">
           Error occurred: {error.message}

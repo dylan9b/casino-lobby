@@ -4,23 +4,37 @@ import { GamesContext } from "./GamesContext";
 export function GamesProvider({ children }) {
   const [games, setGames] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadLimitReached, setIsLoadLimitReached] = useState(false);
   const [error, setError] = useState(null);
 
   const [inputValue, setInputValue] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+
+  const [filter, setFilter] = useState({
+    searchTerm: "",
+    first: 4,
+    offset: 0,
+  });
+
+  const [allGames, setAllGames] = useState([]); // full filtered list
 
   useEffect(() => {
-    async function fetchGames() {
+    async function fetchAndFilterGames() {
       setIsLoading(true);
       try {
         const response = await fetch("/games.json");
         if (!response.ok) throw new Error("Failed to fetch games");
+
         const rawData = await response.json();
-        const allGames = Object.values(rawData);
-        const filtered = allGames.filter((game) =>
-          game.title.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setGames(filtered);
+        let fetched = Object.values(rawData);
+
+        if (filter.searchTerm) {
+          fetched = fetched.filter((game) =>
+            game.title.toLowerCase().includes(filter.searchTerm.toLowerCase())
+          );
+        }
+
+        setAllGames(fetched); // store filtered list
+        setGames(fetched.slice(0, filter.first)); // load first N
       } catch (err) {
         setError(err);
       } finally {
@@ -28,8 +42,37 @@ export function GamesProvider({ children }) {
       }
     }
 
-    fetchGames();
-  }, [searchTerm]);
+    fetchAndFilterGames();
+  }, [filter.first, filter.searchTerm]);
+
+  useEffect(() => {
+    if (filter.offset === 0) return;
+
+    const nextChunk = allGames.slice(
+      filter.offset,
+      filter.offset + filter.first
+    );
+
+    setGames((prev) => [...prev, ...nextChunk]);
+  }, [allGames, filter.first, filter.offset]);
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth",
+      });
+    });
+
+    setIsLoadLimitReached(games.length === allGames.length);
+  }, [games, allGames]);
+
+  const loadMore = () => {
+    setFilter((prev) => ({
+      ...prev,
+      offset: prev.offset + prev.first,
+    }));
+  };
 
   return (
     <GamesContext.Provider
@@ -39,8 +82,10 @@ export function GamesProvider({ children }) {
         error,
         inputValue,
         setInputValue,
-        searchTerm,
-        setSearchTerm,
+        filter,
+        setFilter,
+        loadMore,
+        isLoadLimitReached,
       }}
     >
       {children}
