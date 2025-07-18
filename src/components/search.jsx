@@ -71,6 +71,7 @@ function Search() {
           }  absolute right-4 top-1/2 -translate-y-1/2 text-2xl`}
           onClick={handleClearSearch}
           disabled={!inputValue}
+          aria-label="Clear search"
         >
           &times;
         </button>
