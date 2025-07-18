@@ -1,14 +1,27 @@
 import { useEffect, useState } from "react";
 import { useGamesContext } from "../context/useGamesContext";
+import { useSearchParams } from "react-router-dom";
 
 function Search() {
   const { filter, setFilter } = useGamesContext();
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(filter.searchTerm || "");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const searchTermFromUrl = searchParams.get("search") || "";
 
   useEffect(() => {
     setInputValue(filter.searchTerm || "");
   }, [filter.searchTerm]);
+
+  useEffect(() => {
+    setFilter((prev) => {
+      if (prev.searchTerm !== searchTermFromUrl) {
+        return { ...prev, searchTerm: searchTermFromUrl };
+      }
+      return prev;
+    });
+  }, [searchTermFromUrl, setFilter]);
 
   const handleOnChange = (e) => {
     const { value } = e.target;
@@ -18,11 +31,26 @@ function Search() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setFilter({ ...filter, searchTerm: inputValue });
+
+    updateUrlParams(inputValue);
+  };
+
+  const updateUrlParams = (value = "") => {
+    const newParams = new URLSearchParams(searchParams.toString());
+
+    if (value) {
+      newParams.set("search", value);
+    } else {
+      newParams.delete("search");
+    }
+
+    setSearchParams(newParams);
   };
 
   const handleClearSearch = () => {
     setInputValue("");
     setFilter({ ...filter, searchTerm: "" });
+    updateUrlParams();
   };
 
   return (
@@ -40,7 +68,7 @@ function Search() {
           type="button"
           className={` ${
             !inputValue ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
-          }  absolute right-4 top-1/2 -translate-y-1/2 text-2 xl`}
+          }  absolute right-4 top-1/2 -translate-y-1/2 text-2xl`}
           onClick={handleClearSearch}
           disabled={!inputValue}
         >

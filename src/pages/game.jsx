@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 function Game() {
   const location = useLocation();
   const { slug } = useParams();
+
   const routeGame = location.state?.game;
   const { getGameBySlug } = useGamesContext();
   const [game, setGame] = useState(routeGame || null);
