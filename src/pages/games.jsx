@@ -10,12 +10,12 @@ function Games() {
     useGamesContext();
 
   return (
-    <article className="flex flex-col gap-8">
-      <div className="flex items-center justify-center gap-8">
+    <article className="flex flex-col items-center gap-8">
+      <div className="flex items-center justify-center gap-8 w-full">
         <Search />
         <Link
           to="favourites"
-          className="w-4 h-4 flex rounded-full p-4 items-center justify-center  cursor-pointer text-xl border border-current/30 ring-2 ring-current/10 duration-300 transition-all hover:scale-110 bg-red-50 ${
+          className="w-4 h-4 flex rounded-full p-4 items-center justify-center cursor-pointer text-xl border border-current/30 ring-2 ring-current/10 duration-300 transition-all hover:scale-110 bg-red-50 ${
               text-red-400"
         >
           &hearts;

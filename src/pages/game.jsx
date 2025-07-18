@@ -21,13 +21,23 @@ function Game() {
 
   return (
     <div className="flex flex-col items-center justify-center gap-8 relative">
-      <div>
-        <Link to="/games" className="absolute top-0 left-0">
-          <div className="w-6 h-6 md:w-8 md:h-8 text-sm md:text-base rounded-full border border-gray-200 bg-gray-200 text--black flex items-center justify-center">
-            &lsaquo;
-          </div>
+      <div className="flex items-center justify-between w-full">
+        <Link
+          to="/games"
+          className="w-6 h-6 md:w-8 md:h-8 text-sm md:text-base rounded-full border border-gray-200 bg-gray-200 text--black flex items-center justify-center"
+        >
+          &lsaquo;
         </Link>
+
         <h1>{game?.title}</h1>
+
+        <Link
+          to="/games/favourites"
+          className="w-4 h-4 flex rounded-full p-4 items-center justify-center cursor-pointer text-xl border border-current/30 ring-2 ring-current/10 duration-300 transition-all hover:scale-110 bg-red-50 ${
+              text-red-400"
+        >
+          &hearts;
+        </Link>
       </div>
       <img
         className="aspect-square"

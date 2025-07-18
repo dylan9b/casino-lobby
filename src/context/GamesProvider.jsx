@@ -40,11 +40,6 @@ export function GamesProvider({ children }) {
         const rawData = await response.json();
         let fetched = Object.values(rawData);
 
-        fetched = fetched.map((game) => ({
-          ...game,
-          isFavourite: favourites.includes(game.slug),
-        }));
-
         if (filter.searchTerm) {
           fetched = fetched.filter((game) =>
             game.title.toLowerCase().includes(filter.searchTerm.toLowerCase())
