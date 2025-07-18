@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useGamesContext } from "../context/useGamesContext";
 import { useEffect, useState } from "react";
 
@@ -19,8 +19,15 @@ function Game() {
   }, [game, slug, getGameBySlug]);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-8">
-      <h1>{game?.title}</h1>
+    <div className="flex flex-col items-center justify-center gap-8 relative">
+      <div>
+        <Link to="/games" className="absolute top-0 left-0">
+          <div className="w-6 h-6 md:w-8 md:h-8 text-sm md:text-base rounded-full border border-gray-200 bg-gray-200 text--black flex items-center justify-center">
+            &lsaquo;
+          </div>
+        </Link>
+        <h1>{game?.title}</h1>
+      </div>
       <img
         className="aspect-square"
         width="500"
