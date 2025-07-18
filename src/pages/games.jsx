@@ -11,16 +11,16 @@ function Games() {
 
   return (
     <article className="flex flex-col items-center gap-8">
-      <h1 className="text-3xl relative w-full">
-        Mini Casino Lobby
+      <div className="flex items-center w-full">
+        <h1 className="ml-8 flex-1 text-xl lg:text-3xl">Mini Casino Lobby</h1>
         <Link
           to="favourites"
-          className="absolute top-0 right-0 w-4 h-4 flex rounded-full p-4 items-center justify-center cursor-pointer text-xl border border-current/30 ring-2 ring-current/10 duration-300 transition-all hover:scale-110 bg-red-50 ${
+          className="w-4 h-4 flex rounded-full p-4 items-center justify-center cursor-pointer text-xl border border-current/30 ring-2 ring-current/10 duration-300 transition-all hover:scale-110 bg-red-50 
               text-red-400"
         >
           &hearts;
         </Link>
-      </h1>
+      </div>
       <Search />
 
       {/* Loaded Games */}

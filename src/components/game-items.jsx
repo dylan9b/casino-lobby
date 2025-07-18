@@ -13,7 +13,7 @@ function GameItems({ games }) {
     <section className="w-full gap-4 grid grid-cols-[repeat(auto-fill,_minmax(15em,_1fr))]">
       {games.map((game, i) => (
         <article key={i} className="relative">
-          <Link to={game.slug} state={{ game }}>
+          <Link to={`/games/${game.slug}`} state={{ game }}>
             <div className="text-black cursor-pointer w-full h-auto bg-gray-200 rounded-2xl">
               <img
                 className="rounded-2xl max-w-full h-auto aspect-square object-cover"

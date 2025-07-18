@@ -61,7 +61,7 @@ function Search() {
           name="searchTerm"
           value={inputValue}
           placeholder="Type and press Enter"
-          className="border rounded border-gray-200 px-8 py-1 w-full focus-visible:outline-0 focus-visible:ring-4 focus-visible:ring-teal-600/10"
+          className="border rounded border-gray-200 px-4 py-3 w-full focus-visible:outline-0 focus-visible:ring-4 focus-visible:ring-teal-600/10"
           onChange={handleOnChange}
         />
         <button

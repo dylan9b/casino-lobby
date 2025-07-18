@@ -95,7 +95,7 @@ export function GamesProvider({ children }) {
   }, [games]);
 
   const getGameBySlug = (slug) => {
-    return allGames.find((game) => game.slug === slug);
+    return games.find((game) => game.slug === slug);
   };
 
   const toggleFav = (slug) => {
