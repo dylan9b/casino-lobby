@@ -1,6 +1,7 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useGamesContext } from "../context/useGamesContext";
 import { useEffect, useState } from "react";
+import BackButton from "../components/back-button";
 
 function Game() {
   const location = useLocation();
@@ -22,14 +23,9 @@ function Game() {
   return (
     <div className="flex flex-col items-center justify-center gap-8 relative">
       <div className="flex items-center justify-between w-full">
-        <Link
-          to="/games"
-          className="w-6 h-6 md:w-8 md:h-8 text-sm md:text-base rounded-full border border-gray-200 bg-gray-200 text--black flex items-center justify-center"
-        >
-          &lsaquo;
-        </Link>
+        <BackButton />
 
-        <h1>{game?.title}</h1>
+        <h1 className="text-3xl">{game?.title}</h1>
 
         <Link
           to="/games/favourites"

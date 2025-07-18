@@ -2,18 +2,15 @@ import { useGamesContext } from "../context/useGamesContext";
 import GameItems from "../components/game-items";
 import { Link } from "react-router-dom";
 import NoFavourites from "../components/no-favourites";
+import BackButton from "../components/back-button";
 
 function Favourites() {
   const { favouriteGames } = useGamesContext();
   return (
     <>
       <div className="flex flex-col items-center justify-center gap-8 relative">
-        <div>
-          <Link to="/games" className="absolute top-0 left-0">
-            <div className="w-6 h-6 md:w-8 md:h-8 text-sm md:text-base rounded-full border border-gray-200 bg-gray-200 text--black flex items-center justify-center">
-              &lsaquo;
-            </div>
-          </Link>
+        <div className="[&>a]:absolute [&>a]:top-0 [&>a]:left-0">
+          <BackButton />
           <h1>Favourite Games</h1>
         </div>
 

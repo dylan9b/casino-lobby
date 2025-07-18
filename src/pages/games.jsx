@@ -11,16 +11,17 @@ function Games() {
 
   return (
     <article className="flex flex-col items-center gap-8">
-      <div className="flex items-center justify-center gap-8 w-full">
-        <Search />
+      <h1 className="text-3xl relative w-full">
+        Mini Casino Lobby
         <Link
           to="favourites"
-          className="w-4 h-4 flex rounded-full p-4 items-center justify-center cursor-pointer text-xl border border-current/30 ring-2 ring-current/10 duration-300 transition-all hover:scale-110 bg-red-50 ${
+          className="absolute top-0 right-0 w-4 h-4 flex rounded-full p-4 items-center justify-center cursor-pointer text-xl border border-current/30 ring-2 ring-current/10 duration-300 transition-all hover:scale-110 bg-red-50 ${
               text-red-400"
         >
           &hearts;
         </Link>
-      </div>
+      </h1>
+      <Search />
 
       {/* Loaded Games */}
       {!isLoading && <GameItems games={games} />}
