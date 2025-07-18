@@ -3,14 +3,24 @@ import { useGamesContext } from "../context/useGamesContext";
 import LoadMore from "../components/load-more";
 import NoGames from "../components/no-games";
 import GameItems from "../components/game-items";
+import { Link } from "react-router-dom";
 
 function Games() {
   const { isLoading, games, error, loadMore, isLoadLimitReached } =
     useGamesContext();
 
   return (
-    <>
-      <Search />
+    <article className="flex flex-col gap-8">
+      <div className="flex items-center justify-center gap-8">
+        <Search />
+        <Link
+          to="favourites"
+          className="w-4 h-4 flex rounded-full p-4 items-center justify-center  cursor-pointer text-xl border border-current/30 ring-2 ring-current/10 duration-300 transition-all hover:scale-110 bg-red-50 ${
+              text-red-400"
+        >
+          &hearts;
+        </Link>
+      </div>
 
       {/* Loaded Games */}
       {!isLoading && <GameItems games={games} />}
@@ -28,7 +38,7 @@ function Games() {
           Error occurred: {error.message}
         </h1>
       )}
-    </>
+    </article>
   );
 }
 

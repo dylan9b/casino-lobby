@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { GamesContext } from "./GamesContext";
 
 export function GamesProvider({ children }) {
@@ -6,6 +6,19 @@ export function GamesProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadLimitReached, setIsLoadLimitReached] = useState(false);
   const [error, setError] = useState(null);
+  const didLoadMoreRef = useRef(false);
+  const [favourites, setFavourites] = useState(() => {
+    if (typeof window === "undefined") return []; // for SSR safety
+    try {
+      return JSON.parse(localStorage.getItem("favourites")) || [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem("favourites", JSON.stringify(favourites));
+  }, [favourites]);
 
   const [inputValue, setInputValue] = useState("");
 
@@ -26,6 +39,11 @@ export function GamesProvider({ children }) {
 
         const rawData = await response.json();
         let fetched = Object.values(rawData);
+
+        fetched = fetched.map((game) => ({
+          ...game,
+          isFavourite: favourites.includes(game.slug),
+        }));
 
         if (filter.searchTerm) {
           fetched = fetched.filter((game) =>
@@ -57,25 +75,46 @@ export function GamesProvider({ children }) {
   }, [allGames, filter.first, filter.offset]);
 
   useEffect(() => {
-    requestAnimationFrame(() => {
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth",
+    if (didLoadMoreRef.current) {
+      requestAnimationFrame(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: "smooth",
+        });
       });
-    });
-
+      didLoadMoreRef.current = false;
+    }
     setIsLoadLimitReached(games.length === allGames.length);
-  }, [games, allGames]);
+  }, [allGames.length, games.length]);
 
   const loadMore = () => {
+    didLoadMoreRef.current = true;
     setFilter((prev) => ({
       ...prev,
       offset: prev.offset + prev.first,
     }));
   };
 
+  const favouriteGames = useMemo(() => {
+    return games.filter((g) => g.isFavourite);
+  }, [games]);
+
   const getGameBySlug = (slug) => {
     return allGames.find((game) => game.slug === slug);
+  };
+
+  const toggleFav = (slug) => {
+    setGames((games) =>
+      games.map((game) =>
+        game.slug === slug ? { ...game, isFavourite: !game.isFavourite } : game
+      )
+    );
+
+    setFavourites((prev) => {
+      return prev.includes(slug)
+        ? prev.filter((s) => s !== slug)
+        : [...prev, slug];
+    });
   };
 
   return (
@@ -91,6 +130,8 @@ export function GamesProvider({ children }) {
         loadMore,
         isLoadLimitReached,
         getGameBySlug,
+        toggleFav,
+        favouriteGames,
       }}
     >
       {children}

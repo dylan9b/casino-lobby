@@ -54,7 +54,7 @@ function Search() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4">
+    <form className="w-full" onSubmit={handleSubmit}>
       <div className="relative">
         <input
           type="text"
