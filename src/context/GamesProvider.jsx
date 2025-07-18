@@ -74,6 +74,10 @@ export function GamesProvider({ children }) {
     }));
   };
 
+  const getGameBySlug = (slug) => {
+    return allGames.find((game) => game.slug === slug);
+  };
+
   return (
     <GamesContext.Provider
       value={{
@@ -86,6 +90,7 @@ export function GamesProvider({ children }) {
         setFilter,
         loadMore,
         isLoadLimitReached,
+        getGameBySlug,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { lazy } from "react";
 import LazyWrapper from "../components/lazy-wrapper";
 import { GamesProvider } from "../context/GamesProvider";
@@ -16,13 +16,16 @@ const router = createBrowserRouter([
     path: "/games",
     element: (
       <GamesProvider>
-        <LazyWrapper Component={Games} />
+        <Outlet /> {/* Shared layout for nested routes */}
       </GamesProvider>
     ),
-  },
-  {
-    path: "/games/:id",
-    element: <LazyWrapper Component={Game} />,
+    children: [
+      { index: true, element: <LazyWrapper Component={Games} /> },
+      {
+        path: ":slug",
+        element: <LazyWrapper Component={Game} />,
+      },
+    ],
   },
   {
     path: "*",
