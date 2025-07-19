@@ -3,54 +3,37 @@ import { useGamesContext } from "../context/useGamesContext";
 import { useSearchParams } from "react-router-dom";
 
 function Search() {
-  const { filter, setFilter } = useGamesContext();
-
-  const [inputValue, setInputValue] = useState(filter.searchTerm || "");
+  const { setFilter } = useGamesContext();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const searchTermFromUrl = searchParams.get("search") || "";
+  const [inputValue, setInputValue] = useState(searchTermFromUrl);
 
   useEffect(() => {
-    setInputValue(filter.searchTerm || "");
-  }, [filter.searchTerm]);
-
-  useEffect(() => {
-    setFilter((prev) => {
-      if (prev.searchTerm !== searchTermFromUrl) {
-        return { ...prev, searchTerm: searchTermFromUrl };
-      }
-      return prev;
-    });
+    setInputValue(searchTermFromUrl);
+    setFilter((prev) => ({ ...prev, searchTerm: searchTermFromUrl }));
   }, [searchTermFromUrl, setFilter]);
 
+  const updateUrlParams = (value = "") => {
+    const newParams = new URLSearchParams(searchParams.toString());
+    value ? newParams.set("search", value) : newParams.delete("search");
+    setSearchParams(newParams);
+  };
+
   const handleOnChange = (e) => {
-    const { value } = e.target;
-    setInputValue(value);
+    setInputValue(e.target.value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setFilter({ ...filter, searchTerm: inputValue });
-
-    updateUrlParams(inputValue);
-  };
-
-  const updateUrlParams = (value = "") => {
-    const newParams = new URLSearchParams(searchParams.toString());
-
-    if (value) {
-      newParams.set("search", value);
-    } else {
-      newParams.delete("search");
-    }
-
-    setSearchParams(newParams);
+    updateUrlParams(inputValue.trim());
+    setFilter((prev) => ({ ...prev, first: 4, offset: 0 }));
   };
 
   const handleClearSearch = () => {
     setInputValue("");
-    setFilter({ ...filter, searchTerm: "" });
     updateUrlParams();
+    setFilter((prev) => ({ ...prev, first: 4, offset: 0 }));
   };
 
   return (
@@ -66,9 +49,9 @@ function Search() {
         />
         <button
           type="button"
-          className={` ${
+          className={`absolute right-4 top-1/2 -translate-y-1/2 text-2xl transition-opacity ${
             !inputValue ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
-          }  absolute right-4 top-1/2 -translate-y-1/2 text-2xl`}
+          }`}
           onClick={handleClearSearch}
           disabled={!inputValue}
           aria-label="Clear search"

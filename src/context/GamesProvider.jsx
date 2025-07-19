@@ -5,7 +5,7 @@ import usePersistedFavourites from "./useFavourites";
 export function GamesProvider({ children }) {
   const [allGames, setAllGames] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadLimitReached, setIsLoadLimitReached] = useState(false);
+  // const [isLoadLimitReached, setIsLoadLimitReached] = useState(false);
   const [error, setError] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [favourites, setFavourites] = usePersistedFavourites();
@@ -45,16 +45,23 @@ export function GamesProvider({ children }) {
     [favourites]
   );
 
-  const filteredGames = useMemo(() => {
-    const matches = enrichWithFavourites(allGames).filter((game) =>
+  const enrichedGames = useMemo(() => {
+    return enrichWithFavourites(allGames);
+  }, [allGames, enrichWithFavourites]);
+
+  const matchedGames = useMemo(() => {
+    return enrichedGames.filter((game) =>
       game.title.toLowerCase().includes(filter.searchTerm.toLowerCase())
     );
-    return matches.slice(0, filter.offset + filter.first);
-  }, [allGames, filter, enrichWithFavourites]);
+  }, [enrichedGames, filter.searchTerm]);
 
-  useEffect(() => {
-    setIsLoadLimitReached(filteredGames.length >= allGames.length);
-  }, [filteredGames.length, allGames.length]);
+  const filteredGames = useMemo(() => {
+    return matchedGames.slice(0, filter.offset + filter.first);
+  }, [matchedGames, filter.offset, filter.first]);
+
+  const isLoadLimitReached = useMemo(() => {
+    return filteredGames.length >= matchedGames.length;
+  }, [filteredGames.length, matchedGames.length]);
 
   const loadMore = () => {
     setFilter((prev) => ({

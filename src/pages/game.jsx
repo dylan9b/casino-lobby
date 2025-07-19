@@ -1,14 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 import { useGamesContext } from "../context/useGamesContext";
 import BackButton from "../components/back-button";
-import { useMemo } from "react";
 
 function Game() {
   const { slug } = useParams();
 
   const { gameBySlug, toggleFav } = useGamesContext();
 
-  const game = useMemo(() => gameBySlug(slug), [gameBySlug, slug]);
+  const game = gameBySlug(slug);
 
   const handleOnToggleFav = (e, slug) => {
     e.preventDefault();
