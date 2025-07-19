@@ -6,9 +6,9 @@ import { useMemo } from "react";
 function Game() {
   const { slug } = useParams();
 
-  const { getGameBySlug, toggleFav } = useGamesContext();
+  const { gameBySlug, toggleFav } = useGamesContext();
 
-  const game = useMemo(() => getGameBySlug(slug), [getGameBySlug, slug]);
+  const game = useMemo(() => gameBySlug(slug), [gameBySlug, slug]);
 
   const handleOnToggleFav = (e, slug) => {
     e.preventDefault();
