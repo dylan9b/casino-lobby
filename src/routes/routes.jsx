@@ -13,10 +13,12 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <Layout>
-        <Outlet />
-      </Layout>
-    ), // Layout wraps all routes here
+      <GamesProvider>
+        <Layout>
+          <Outlet />
+        </Layout>
+      </GamesProvider>
+    ),
     children: [
       {
         path: "/",
@@ -24,11 +26,6 @@ const router = createBrowserRouter([
       },
       {
         path: "games",
-        element: (
-          <GamesProvider>
-            <Outlet /> {/* Nested layout for games */}
-          </GamesProvider>
-        ),
         children: [
           { index: true, element: <LazyWrapper Component={Games} /> },
           { path: ":slug", element: <LazyWrapper Component={Game} /> },

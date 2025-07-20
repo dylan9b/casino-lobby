@@ -28,7 +28,7 @@ function Game() {
         </Link>
       </div>
       <div
-        className="w-full xxl:w-3/4 bg-cover bg-center bg-no-repeat aspect-video rounded-2xl"
+        className="w-full xl:w-3/4 bg-cover bg-center bg-no-repeat aspect-video rounded-2xl"
         style={{
           backgroundImage: `url("https:${game?.game_background}")`,
         }}
