@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { lazy } from "react";
 import LazyWrapper from "../components/lazy-wrapper";
 import { GamesProvider } from "../context/GamesProvider";
+import Layout from "../components/layout";
 
 // Lazy-loaded components
 const Games = lazy(() => import("../pages/games"));
@@ -11,30 +12,37 @@ const Favourites = lazy(() => import("../pages/favourites"));
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/games" replace />,
-  },
-  {
-    path: "/games",
     element: (
-      <GamesProvider>
-        <Outlet /> {/* Shared layout for nested routes */}
-      </GamesProvider>
-    ),
+      <Layout>
+        <Outlet />
+      </Layout>
+    ), // Layout wraps all routes here
     children: [
-      { index: true, element: <LazyWrapper Component={Games} /> },
       {
-        path: ":slug",
-        element: <LazyWrapper Component={Game} />,
+        path: "/",
+        element: <Navigate to="/games" replace />,
       },
       {
-        path: "favourites",
-        element: <LazyWrapper Component={Favourites} />,
+        path: "games",
+        element: (
+          <GamesProvider>
+            <Outlet /> {/* Nested layout for games */}
+          </GamesProvider>
+        ),
+        children: [
+          { index: true, element: <LazyWrapper Component={Games} /> },
+          { path: ":slug", element: <LazyWrapper Component={Game} /> },
+          {
+            path: "favourites",
+            element: <LazyWrapper Component={Favourites} />,
+          },
+        ],
+      },
+      {
+        path: "*",
+        element: <Navigate to="/games" replace />,
       },
     ],
-  },
-  {
-    path: "*",
-    element: <Navigate to="/games" replace />,
   },
 ]);
 

@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 
 function Search() {
   const { setFilter } = useGamesContext();
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const searchTermFromUrl = searchParams.get("search") || "";
@@ -11,7 +12,10 @@ function Search() {
 
   useEffect(() => {
     setInputValue(searchTermFromUrl);
-    setFilter((prev) => ({ ...prev, searchTerm: searchTermFromUrl }));
+    setFilter((prev) => ({
+      ...prev,
+      searchTerm: searchTermFromUrl,
+    }));
   }, [searchTermFromUrl, setFilter]);
 
   const updateUrlParams = (value = "") => {
@@ -26,14 +30,23 @@ function Search() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateUrlParams(inputValue.trim());
-    setFilter((prev) => ({ ...prev, first: 4, offset: 0 }));
+    const trimmed = inputValue.trim();
+    updateUrlParams(trimmed);
+    setFilter((prev) => ({
+      ...prev,
+      searchTerm: inputValue.trim(),
+      offset: 0, // reset pagination on new search
+    }));
   };
 
   const handleClearSearch = () => {
     setInputValue("");
     updateUrlParams();
-    setFilter((prev) => ({ ...prev, first: 4, offset: 0 }));
+    setFilter((prev) => ({
+      ...prev,
+      searchTerm: "",
+      offset: 0, // reset pagination on new search
+    }));
   };
 
   return (
@@ -41,7 +54,6 @@ function Search() {
       <div className="relative">
         <input
           type="text"
-          name="searchTerm"
           value={inputValue}
           placeholder="Type and press Enter"
           className="border rounded border-gray-200 px-4 py-3 w-full focus-visible:outline-0 focus-visible:ring-4 focus-visible:ring-teal-600/10"

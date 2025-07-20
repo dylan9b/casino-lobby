@@ -16,7 +16,7 @@ function GameItems({ games }) {
           <Link to={`/games/${game.slug}`} state={{ game }}>
             <div className="text-black cursor-pointer w-full h-auto bg-gray-200 rounded-2xl">
               <img
-                className="rounded-2xl max-w-full h-auto aspect-square object-cover"
+                className="rounded-2xl min-w-full max-w-full h-auto aspect-square object-cover"
                 loading="lazy"
                 src={game.game_thumbnail}
                 alt={game.title}

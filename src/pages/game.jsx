@@ -13,11 +13,11 @@ function Game() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-16 relative">
+    <div className="flex flex-col items-center justify-center gap-8 relative">
       <div className="flex items-center justify-between w-full">
         <BackButton />
 
-        <h1 className="text-xl lg:text-3xl ">{game?.title}</h1>
+        <h1 className="text-xl lg:text-3xl font-semibold">{game?.title}</h1>
 
         <Link
           to="/games/favourites"
@@ -28,7 +28,7 @@ function Game() {
         </Link>
       </div>
       <div
-        className="w-full bg-cover bg-center bg-no-repeat aspect-video"
+        className="w-full xxl:w-3/4 bg-cover bg-center bg-no-repeat aspect-video rounded-2xl"
         style={{
           backgroundImage: `url("https:${game?.game_background}")`,
         }}

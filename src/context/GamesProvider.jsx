@@ -9,32 +9,6 @@ export function GamesProvider({ children }) {
   const [error, setError] = useState(null);
   const [favourites, setFavourites] = usePersistedFavourites();
 
-  const { filter, setFilter, loadMore } = useInfiniteLoad({
-    first: 4,
-    offset: 0,
-    searchTerm: "",
-  });
-
-  useEffect(() => {
-    async function fetchGames() {
-      setIsLoading(true);
-      try {
-        const response = await fetch("/games.json");
-        if (!response.ok) throw new Error("Failed to fetch games");
-
-        const rawData = await response.json();
-        const fetched = Object.values(rawData);
-        setAllGames(fetched);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchGames();
-  }, []);
-
   const enrichWithFavourites = useCallback(
     (games) =>
       games.map((game) => ({
@@ -48,19 +22,34 @@ export function GamesProvider({ children }) {
     return enrichWithFavourites(allGames);
   }, [allGames, enrichWithFavourites]);
 
-  const matchedGames = useMemo(() => {
-    return enrichedGames.filter((game) =>
-      game.title.toLowerCase().includes(filter.searchTerm.toLowerCase())
-    );
-  }, [enrichedGames, filter.searchTerm]);
+  const { filter, setFilter, loadMore, paginatedGames, isLoadLimitReached } = useInfiniteLoad(
+    {
+      first: 4,
+      offset: 0,
+      searchTerm: "",
+    },
+    enrichedGames
+  );
 
-  const paginatedGames = useMemo(() => {
-    return matchedGames.slice(0, filter.offset + filter.first);
-  }, [matchedGames, filter.offset, filter.first]);
+  useEffect(() => {
+    async function fetchGames() {
+      setIsLoading(true);
+      try {
+        const response = await fetch("/games.json");
+        if (!response.ok) throw new Error("Failed to fetch games");
 
-  const isLoadLimitReached = useMemo(() => {
-    return paginatedGames.length >= matchedGames.length;
-  }, [paginatedGames.length, matchedGames.length]);
+        const rawData = await response.json();
+        const fetched = Object.values(rawData);
+        setAllGames(fetched);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error("Unknown error"));
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchGames();
+  }, []);
 
   const toggleFav = useCallback(
     (slug) => {
@@ -72,12 +61,12 @@ export function GamesProvider({ children }) {
   );
 
   const favouriteGames = useMemo(() => {
-    return enrichWithFavourites(allGames).filter((g) => g.isFavourite);
-  }, [allGames, enrichWithFavourites]);
+    return enrichedGames.filter((g) => g.isFavourite);
+  }, [enrichedGames]);
 
   const gameBySlug = useCallback(
-    (slug) => enrichWithFavourites(allGames).find((game) => game.slug === slug),
-    [allGames, enrichWithFavourites]
+    (slug) => enrichedGames.find((game) => game.slug === slug),
+    [enrichedGames]
   );
 
   return (
