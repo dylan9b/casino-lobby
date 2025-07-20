@@ -7,7 +7,6 @@ export function GamesProvider({ children }) {
   const [allGames, setAllGames] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [inputValue, setInputValue] = useState("");
   const [favourites, setFavourites] = usePersistedFavourites();
 
   const { filter, setFilter, loadMore } = useInfiniteLoad({
@@ -87,8 +86,6 @@ export function GamesProvider({ children }) {
         games: paginatedGames,
         isLoading,
         error,
-        inputValue,
-        setInputValue,
         filter,
         setFilter,
         loadMore,
