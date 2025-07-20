@@ -1,19 +1,19 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { GamesContext } from "./GamesContext";
 import usePersistedFavourites from "./useFavourites";
+import useInfiniteLoad from "./useInfiniteLoad";
 
 export function GamesProvider({ children }) {
   const [allGames, setAllGames] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  // const [isLoadLimitReached, setIsLoadLimitReached] = useState(false);
   const [error, setError] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [favourites, setFavourites] = usePersistedFavourites();
 
-  const [filter, setFilter] = useState({
-    searchTerm: "",
+  const { filter, setFilter, loadMore } = useInfiniteLoad({
     first: 4,
     offset: 0,
+    searchTerm: "",
   });
 
   useEffect(() => {
@@ -55,28 +55,13 @@ export function GamesProvider({ children }) {
     );
   }, [enrichedGames, filter.searchTerm]);
 
-  const filteredGames = useMemo(() => {
+  const paginatedGames = useMemo(() => {
     return matchedGames.slice(0, filter.offset + filter.first);
   }, [matchedGames, filter.offset, filter.first]);
 
   const isLoadLimitReached = useMemo(() => {
-    return filteredGames.length >= matchedGames.length;
-  }, [filteredGames.length, matchedGames.length]);
-
-  const loadMore = () => {
-    setFilter((prev) => ({
-      ...prev,
-      offset: prev.offset + prev.first,
-    }));
-
-    // Optionally scroll
-    setTimeout(() => {
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth",
-      });
-    }, 0);
-  };
+    return paginatedGames.length >= matchedGames.length;
+  }, [paginatedGames.length, matchedGames.length]);
 
   const toggleFav = useCallback(
     (slug) => {
@@ -99,7 +84,7 @@ export function GamesProvider({ children }) {
   return (
     <GamesContext.Provider
       value={{
-        games: filteredGames,
+        games: paginatedGames,
         isLoading,
         error,
         inputValue,
