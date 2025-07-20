@@ -18,18 +18,20 @@ export function GamesProvider({ children }) {
     [favourites]
   );
 
-  const enrichedGames = useMemo(() => {
-    return enrichWithFavourites(allGames);
-  }, [allGames, enrichWithFavourites]);
-
-  const { filter, setFilter, loadMore, paginatedGames, isLoadLimitReached } = useInfiniteLoad(
-    {
-      first: 4,
-      offset: 0,
-      searchTerm: "",
-    },
-    enrichedGames
+  const enrichedGames = useMemo(
+    () => enrichWithFavourites(allGames),
+    [allGames, enrichWithFavourites]
   );
+
+  const { filter, setFilter, loadMore, paginatedGames, isLoadLimitReached } =
+    useInfiniteLoad(
+      {
+        first: 4,
+        offset: 0,
+        searchTerm: "",
+      },
+      enrichedGames
+    );
 
   useEffect(() => {
     async function fetchGames() {
