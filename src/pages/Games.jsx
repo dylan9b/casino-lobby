@@ -9,7 +9,7 @@ import LoadMore from "../components/load-more";
 
 function Games() {
   const { state } = useContext(GamesContext);
-  const { games, isLoading } = state;
+  const { games, isLoading, error } = state;
 
   const { paginatedGames, isLoadLimitReached, loadMore } =
     useInfiniteLoad(games);
@@ -36,13 +36,13 @@ function Games() {
       )}
 
       {/* No games found */}
-      {/* {!isLoading && !games.length && <NoGames />} */}
+      {!isLoading && !games.length && <NoGames />}
 
-      {/* {error && (
+      {error && (
         <h1 className="text-red-600 font-semibold mt-4">
           Error occurred: {error.message}
         </h1>
-      )} */}
+      )}
     </article>
   );
 }

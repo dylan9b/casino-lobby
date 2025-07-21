@@ -5,6 +5,7 @@ import GamesContext from "../context/GamesProvider";
 import { useContext } from "react";
 import { GameActions } from "../context/Game-actions-constants";
 import { getGameBySlug } from "../context/Selectors";
+import { toast } from "react-toastify";
 
 function Game() {
   const { slug } = useParams();
@@ -15,6 +16,13 @@ function Game() {
   const handleOnToggleFav = (e, slug) => {
     e.preventDefault();
     dispatch({ type: GameActions.TOGGLE_FAV, payload: slug });
+
+    const toastMessage = `${
+      game.isFavourite
+        ? "Game removed from favourites"
+        : "Game added to favourites"
+    }`;
+    toast.success(toastMessage);
   };
 
   return (
