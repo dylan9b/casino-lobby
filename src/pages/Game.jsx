@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useGamesContext } from "../context/useGamesContext";
-import BackButton from "../components/back-button";
+import BackButton from "../components/UI/BackButton";
+import Heart from "../components/UI/Heart";
 
 function Game() {
   const { slug } = useParams();
@@ -19,12 +20,8 @@ function Game() {
 
         <h1 className="text-xl lg:text-3xl font-semibold">{game?.title}</h1>
 
-        <Link
-          to="/games/favourites"
-          className="w-4 h-4 flex rounded-full p-4 items-center justify-center cursor-pointer text-xl border border-current/30 ring-2 ring-current/10 duration-300 transition-all hover:scale-110 bg-red-50 
-              text-red-400"
-        >
-          &hearts;
+        <Link to="/games/favourites">
+          <Heart className="text-red-400" />
         </Link>
       </div>
       <div
@@ -40,14 +37,12 @@ function Game() {
             </span>
 
             <div className="flex items-center gap-8">
-              <small
+              <Heart
                 onClick={(e) => handleOnToggleFav(e, game.slug)}
-                className={`w-4 h-4 flex rounded-full p-4 items-center justify-center cursor-pointer text-xl border border-current/30 ring-2 ring-current/10 duration-300 transition-all hover:scale-110 bg-red-50 ${
+                className={`${
                   game?.isFavourite ? "text-red-400" : "text-slate-400"
                 }`}
-              >
-                &hearts;
-              </small>
+              />
             </div>
           </div>
 

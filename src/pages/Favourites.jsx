@@ -1,9 +1,9 @@
 import { useGamesContext } from "../context/useGamesContext";
 import GameItems from "../components/game-items";
 import NoFavourites from "../components/no-favourites";
-import BackButton from "../components/back-button";
 import LoadMore from "../components/load-more";
 import useInfiniteLoad from "../context/useInfiniteLoad";
+import BackButton from "../components/UI/BackButton";
 
 function Favourites() {
   const { favouriteGames, isLoading } = useGamesContext();

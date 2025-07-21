@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useGamesContext } from "../context/useGamesContext";
+import Heart from "./UI/Heart";
 
 function GameItems({ games }) {
   const { toggleFav } = useGamesContext();
@@ -23,14 +24,13 @@ function GameItems({ games }) {
               />
             </div>
           </Link>
-          <small
+
+          <Heart
             onClick={(e) => handleOnToggleFav(e, game.slug)}
-            className={`w-4 h-4 flex rounded-full p-4 items-center justify-center absolute top-4 right-4 cursor-pointer text-xl border border-current/30 ring-2 ring-current/10 duration-300 transition-all hover:scale-110 bg-red-50 ${
-              game.isFavourite ? "text-red-400" : "text-slate-400"
+            className={`absolute top-4 right-4 ${
+              game?.isFavourite ? "text-red-400" : "text-slate-400"
             }`}
-          >
-            &hearts;
-          </small>
+          />
         </article>
       ))}
     </section>

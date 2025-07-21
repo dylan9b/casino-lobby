@@ -4,6 +4,7 @@ import LoadMore from "../components/load-more";
 import NoGames from "../components/no-games";
 import GameItems from "../components/game-items";
 import { Link } from "react-router-dom";
+import Heart from "../components/UI/Heart";
 
 function Games() {
   const { isLoading, games, error, loadMore, isLoadLimitReached } =
@@ -15,12 +16,9 @@ function Games() {
         <h1 className="ml-8 flex-1 text-xl text-center lg:text-3xl font-semibold">
           Mini Casino Lobby
         </h1>
-        <Link
-          to="favourites"
-          className="w-4 h-4 flex rounded-full p-4 items-center justify-center cursor-pointer text-xl border border-current/30 ring-2 ring-current/10 duration-300 transition-all hover:scale-110 bg-red-50 
-              text-red-400"
-        >
-          &hearts;
+
+        <Link to="favourites">
+          <Heart className="text-red-400" />
         </Link>
       </div>
       <Search />

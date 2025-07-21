@@ -2,12 +2,12 @@ import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { lazy } from "react";
 import LazyWrapper from "../components/lazy-wrapper";
 import { GamesProvider } from "../context/GamesProvider";
-import Layout from "../components/layout";
+import Layout from "../components/Layout";
 
 // Lazy-loaded components
-const Games = lazy(() => import("../pages/games"));
-const Game = lazy(() => import("../pages/game"));
-const Favourites = lazy(() => import("../pages/favourites"));
+const Games = lazy(() => import("../pages/Games"));
+const Game = lazy(() => import("../pages/Game"));
+const Favourites = lazy(() => import("../pages/Favourites"));
 
 const router = createBrowserRouter([
   {
