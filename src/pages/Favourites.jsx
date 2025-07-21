@@ -1,11 +1,11 @@
 import GameItems from "../components/game-items";
 import NoFavourites from "../components/no-favourites";
 import LoadMore from "../components/load-more";
-import useInfiniteLoad from "../context/useInfiniteLoad";
 import BackButton from "../components/UI/BackButton";
 import { useContext } from "react";
 import GamesContext from "../context/GamesProvider";
 import { getFavouriteGames } from "../context/Selectors";
+import useInfiniteLoad from "../hooks/useInfiniteLoad";
 
 function Favourites() {
   const { state } = useContext(GamesContext);

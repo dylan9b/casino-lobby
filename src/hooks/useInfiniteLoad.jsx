@@ -1,6 +1,6 @@
 import { useContext, useMemo } from "react";
-import GamesContext from "./GamesProvider";
-import { GameActions } from "./Game-actions-constants";
+import GamesContext from "../context/GamesProvider";
+import { GameActions } from "../context/Game-actions-constants";
 
 function useInfiniteLoad(games = []) {
   const { state, dispatch } = useContext(GamesContext);

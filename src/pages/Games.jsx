@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 import Heart from "../components/UI/Heart";
 import { useContext } from "react";
 import GamesContext from "../context/GamesProvider";
-import useInfiniteLoad from "../context/useInfiniteLoad";
 import LoadMore from "../components/load-more";
 import NoGames from "../components/no-games";
+import useInfiniteLoad from "../hooks/useInfiniteLoad";
+
 function Games() {
   const { state } = useContext(GamesContext);
   const { games, isLoading, error } = state;
