@@ -6,7 +6,7 @@ import { useContext } from "react";
 import GamesContext from "../context/GamesProvider";
 import useInfiniteLoad from "../context/useInfiniteLoad";
 import LoadMore from "../components/load-more";
-
+import NoGames from "../components/no-games";
 function Games() {
   const { state } = useContext(GamesContext);
   const { games, isLoading, error } = state;
@@ -31,12 +31,12 @@ function Games() {
       {!isLoading && <GameItems games={paginatedGames} />}
 
       {/* Load More */}
-      {!isLoading && games.length > 0 && (
+      {!isLoading && paginatedGames.length > 0 && (
         <LoadMore isLoadLimitReached={isLoadLimitReached} loadMore={loadMore} />
       )}
 
       {/* No games found */}
-      {!isLoading && !games.length && <NoGames />}
+      {!isLoading && paginatedGames.length === 0 && <NoGames />}
 
       {error && (
         <h1 className="text-red-600 font-semibold mt-4">
