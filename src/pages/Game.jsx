@@ -1,16 +1,20 @@
 import { Link, useParams } from "react-router-dom";
-import { useGamesContext } from "../context/useGamesContext";
 import BackButton from "../components/UI/BackButton";
 import Heart from "../components/UI/Heart";
+import GamesContext from "../context/GamesProvider";
+import { useContext } from "react";
+import { GameActions } from "../context/Game-actions-constants";
+import { getGameBySlug } from "../context/Selectors";
 
 function Game() {
   const { slug } = useParams();
-  const { gameBySlug, toggleFav } = useGamesContext();
-  const game = gameBySlug(slug);
+  const { state, dispatch } = useContext(GamesContext);
+
+  const game = getGameBySlug(state, slug);
 
   const handleOnToggleFav = (e, slug) => {
     e.preventDefault();
-    toggleFav(slug);
+    dispatch({ type: GameActions.TOGGLE_FAV, payload: slug });
   };
 
   return (

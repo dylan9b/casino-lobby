@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
-import { useGamesContext } from "../context/useGamesContext";
+import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import GamesContext from "../context/GamesProvider";
+import { GameActions } from "../context/Game-actions-constants";
 
 function Search() {
-  const { setFilter } = useGamesContext();
+  const { dispatch } = useContext(GamesContext);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -12,11 +13,12 @@ function Search() {
 
   useEffect(() => {
     setInputValue(searchTermFromUrl);
-    setFilter((prev) => ({
-      ...prev,
-      searchTerm: searchTermFromUrl,
-    }));
-  }, [searchTermFromUrl, setFilter]);
+
+    dispatch({
+      type: GameActions.SET_FILTER,
+      payload: { searchTerm: searchTermFromUrl },
+    });
+  }, [dispatch, searchTermFromUrl]);
 
   const updateUrlParams = (value = "") => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -32,21 +34,31 @@ function Search() {
     e.preventDefault();
     const trimmed = inputValue.trim();
     updateUrlParams(trimmed);
-    setFilter((prev) => ({
-      ...prev,
-      searchTerm: inputValue.trim(),
-      offset: 0, // reset pagination on new search
-    }));
+
+    dispatch({
+      type: GameActions.SET_FILTER,
+      payload: {
+        searchTerm: trimmed,
+      },
+    });
   };
 
   const handleClearSearch = () => {
     setInputValue("");
     updateUrlParams();
-    setFilter((prev) => ({
-      ...prev,
-      searchTerm: "",
-      offset: 0, // reset pagination on new search
-    }));
+
+    dispatch({
+      type: GameActions.UPDATE_FILTER,
+      payload: { searchTerm: null },
+    });
+
+    dispatch({
+      type: GameActions.SET_FILTER,
+      payload: {
+        searchTerm: null,
+        offset: 0,
+      },
+    });
   };
 
   return (

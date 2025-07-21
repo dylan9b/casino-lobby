@@ -1,21 +1,20 @@
-import { useGamesContext } from "../context/useGamesContext";
 import GameItems from "../components/game-items";
 import NoFavourites from "../components/no-favourites";
 import LoadMore from "../components/load-more";
 import useInfiniteLoad from "../context/useInfiniteLoad";
 import BackButton from "../components/UI/BackButton";
+import { useContext } from "react";
+import GamesContext from "../context/GamesProvider";
+import { getFavouriteGames } from "../context/Selectors";
 
 function Favourites() {
-  const { favouriteGames, isLoading } = useGamesContext();
+  const { state } = useContext(GamesContext);
+  const { isLoading } = state;
+  const favouriteGames = getFavouriteGames(state);
 
-  const { paginatedGames, isLoadLimitReached, loadMore } = useInfiniteLoad(
-    {
-      first: 4,
-      offset: 0,
-      searchTerm: "",
-    },
-    favouriteGames
-  );
+
+  const { paginatedGames, isLoadLimitReached, loadMore } =
+    useInfiniteLoad(favouriteGames);
 
   return (
     <>

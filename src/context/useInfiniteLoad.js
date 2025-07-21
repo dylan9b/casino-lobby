@@ -1,13 +1,15 @@
-import { useMemo, useState } from "react";
+import { useContext, useMemo } from "react";
+import GamesContext from "./GamesProvider";
+import { GameActions } from "./Game-actions-constants";
 
-function useInfiniteLoad(initialFilter, games = []) {
-  const [filter, setFilter] = useState(initialFilter);
+function useInfiniteLoad(games = []) {
+  const { state, dispatch } = useContext(GamesContext);
 
   const loadMore = () => {
-    setFilter((prev) => ({
-      ...prev,
-      offset: prev.offset + prev.first,
-    }));
+    dispatch({
+      type: GameActions.SET_FILTER,
+      payload: { offset: state.filter.offset + state.filter.first },
+    });
 
     setTimeout(() => {
       window.scrollTo({
@@ -18,22 +20,20 @@ function useInfiniteLoad(initialFilter, games = []) {
   };
 
   const filteredGames = useMemo(() => {
-    if (!filter.searchTerm) return games;
-    const term = filter.searchTerm.toLowerCase();
+    if (!state.filter.searchTerm) return games;
+    const term = state.filter.searchTerm.toLowerCase();
     return games.filter((item) => item.title.toLowerCase().includes(term));
-  }, [games, filter.searchTerm]);
+  }, [games, state.filter.searchTerm]);
 
   const paginatedGames = useMemo(() => {
-    return filteredGames.slice(0, filter.offset + filter.first);
-  }, [filteredGames, filter]);
+    return filteredGames.slice(0, state.filter.offset + state.filter.first);
+  }, [filteredGames, state.filter]);
 
   const isLoadLimitReached = useMemo(() => {
     return paginatedGames.length >= filteredGames.length;
   }, [filteredGames.length, paginatedGames.length]);
 
   return {
-    filter,
-    setFilter,
     loadMore,
     paginatedGames,
     isLoadLimitReached,

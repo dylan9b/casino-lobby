@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
+import { ToastContainer } from "react-toastify";
 
 const Layout = ({ children }) => {
   return (
@@ -17,6 +18,13 @@ const Layout = ({ children }) => {
       </header>
 
       <main className="p-4 xl:py-8 xl:px-64">{children}</main>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        theme="dark"
+        closeOnClick
+      />
     </>
   );
 };

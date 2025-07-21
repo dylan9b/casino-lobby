@@ -1,92 +1,109 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { GamesContext } from "./GamesContext";
-import usePersistedFavourites from "./useFavourites";
-import useInfiniteLoad from "./useInfiniteLoad";
+import { createContext, useEffect, useReducer } from "react";
+import { GameActions } from "./Game-actions-constants";
 
-export function GamesProvider({ children }) {
-  const [allGames, setAllGames] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [favourites, setFavourites] = usePersistedFavourites();
+const GamesContext = createContext();
 
-  const enrichWithFavourites = useCallback(
-    (games) =>
-      games.map((game) => ({
-        ...game,
-        isFavourite: favourites.includes(game.slug),
-      })),
-    [favourites]
-  );
-
-  const enrichedGames = useMemo(
-    () => enrichWithFavourites(allGames),
-    [allGames, enrichWithFavourites]
-  );
-
-  const { filter, setFilter, loadMore, paginatedGames, isLoadLimitReached } =
-    useInfiniteLoad(
+function gamesReducer(state, action) {
+  switch (action.type) {
+    case GameActions.LOAD_GAMES_SUCCESS: {
       {
-        first: 4,
-        offset: 0,
-        searchTerm: "",
-      },
-      enrichedGames
-    );
+        const { data } = action.payload;
 
-  useEffect(() => {
-    async function fetchGames() {
-      setIsLoading(true);
-      try {
-        const response = await fetch("/games.json");
-        if (!response.ok) throw new Error("Failed to fetch games");
+        let updatedGames = data.map((game) =>
+          state.favourites.includes(game.slug)
+            ? { ...game, isFavourite: true }
+            : game
+        );
 
-        const rawData = await response.json();
-        const fetched = Object.values(rawData);
-        setAllGames(fetched);
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error("Unknown error"));
-      } finally {
-        setIsLoading(false);
+        return { ...state, games: updatedGames, isLoading: false };
       }
     }
+    case GameActions.LOAD_GAMES_ERROR:
+      return { ...state, error: action.payload, isLoading: false };
 
-    fetchGames();
+    case GameActions.SET_FILTER:
+      return { ...state, filter: { ...state.filter, ...action.payload } };
+
+    case GameActions.INIT_FAV:
+      return { ...state, favourites: action.payload };
+    case GameActions.TOGGLE_FAV: {
+      const slug = action.payload;
+      const updatedGames = state.games.map((game) =>
+        game.slug === slug ? { ...game, isFavourite: !game.isFavourite } : game
+      );
+      const updatedFavourites = state.favourites.includes(slug)
+        ? state.favourites.filter((gameSlug) => gameSlug !== slug)
+        : [...state.favourites, slug];
+
+      localStorage.setItem("favourites", JSON.stringify(updatedFavourites));
+      return {
+        ...state,
+        favourites: updatedFavourites,
+        games: updatedGames,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+export function GamesContextProvider({ children }) {
+  const intitialState = {
+    games: [],
+    favourites: [],
+    isLoading: true,
+    error: null,
+    filter: {
+      offset: 0,
+      first: 4,
+      searchTerm: null,
+    },
+  };
+
+  const [state, dispatchGamesAction] = useReducer(gamesReducer, intitialState);
+
+  const gameContext = {
+    state,
+    dispatch: dispatchGamesAction,
+  };
+
+  // Load games from JSON
+  useEffect(() => {
+    const loadGames = async () => {
+      try {
+        const res = await fetch("/games.json");
+        const data = await res.json();
+        const structuredData = Object.values(data);
+
+        dispatchGamesAction({
+          type: GameActions.LOAD_GAMES_SUCCESS,
+          payload: {
+            data: structuredData,
+            filter: {
+              searchTerm: null,
+              first: 4,
+              offset: 0,
+            },
+          },
+        });
+      } catch (error) {
+        dispatchGamesAction({
+          type: GameActions.LOAD_GAMES_ERROR,
+          payload: error.message,
+        });
+      }
+    };
+
+    loadGames();
   }, []);
 
-  const toggleFav = useCallback(
-    (slug) => {
-      setFavourites((prev) =>
-        prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]
-      );
-    },
-    [setFavourites]
-  );
+  // Load favourites from localStorage
+  useEffect(() => {
+    const favs = JSON.parse(localStorage.getItem("favourites")) || [];
+    dispatchGamesAction({ type: GameActions.INIT_FAV, payload: favs });
+  }, []);
 
-  const favouriteGames = useMemo(() => {
-    return enrichedGames.filter((g) => g.isFavourite);
-  }, [enrichedGames]);
-
-  const gameBySlug = useCallback(
-    (slug) => enrichedGames.find((game) => game.slug === slug),
-    [enrichedGames]
-  );
-
-  return (
-    <GamesContext.Provider
-      value={{
-        games: paginatedGames,
-        isLoading,
-        error,
-        filter,
-        setFilter,
-        loadMore,
-        isLoadLimitReached,
-        toggleFav,
-        favouriteGames,
-        gameBySlug,
-      }}
-    >
-      {children}
-    </GamesContext.Provider>
-  );
+  return <GamesContext value={gameContext}>{children}</GamesContext>;
 }
+
+export default GamesContext;

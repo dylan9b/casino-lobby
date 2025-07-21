@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { lazy } from "react";
 import LazyWrapper from "../components/lazy-wrapper";
-import { GamesProvider } from "../context/GamesProvider";
+import { GamesContextProvider } from "../context/GamesProvider";
 import Layout from "../components/Layout";
 
 // Lazy-loaded components
@@ -13,11 +13,11 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <GamesProvider>
+      <GamesContextProvider>
         <Layout>
           <Outlet />
         </Layout>
-      </GamesProvider>
+      </GamesContextProvider>
     ),
     children: [
       {

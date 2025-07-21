@@ -1,14 +1,18 @@
 import Search from "../components/search";
-import { useGamesContext } from "../context/useGamesContext";
-import LoadMore from "../components/load-more";
-import NoGames from "../components/no-games";
 import GameItems from "../components/game-items";
 import { Link } from "react-router-dom";
 import Heart from "../components/UI/Heart";
+import { useContext } from "react";
+import GamesContext from "../context/GamesProvider";
+import useInfiniteLoad from "../context/useInfiniteLoad";
+import LoadMore from "../components/load-more";
 
 function Games() {
-  const { isLoading, games, error, loadMore, isLoadLimitReached } =
-    useGamesContext();
+  const { state } = useContext(GamesContext);
+  const { games, isLoading } = state;
+
+  const { paginatedGames, isLoadLimitReached, loadMore } =
+    useInfiniteLoad(games);
 
   return (
     <article className="flex flex-col items-center gap-8">
@@ -24,7 +28,7 @@ function Games() {
       <Search />
 
       {/* Loaded Games */}
-      {!isLoading && <GameItems games={games} />}
+      {!isLoading && <GameItems games={paginatedGames} />}
 
       {/* Load More */}
       {!isLoading && games.length > 0 && (
@@ -32,13 +36,13 @@ function Games() {
       )}
 
       {/* No games found */}
-      {!isLoading && !games.length && <NoGames />}
+      {/* {!isLoading && !games.length && <NoGames />} */}
 
-      {error && (
+      {/* {error && (
         <h1 className="text-red-600 font-semibold mt-4">
           Error occurred: {error.message}
         </h1>
-      )}
+      )} */}
     </article>
   );
 }
