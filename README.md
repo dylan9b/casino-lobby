@@ -34,6 +34,9 @@ If you are developing a production application, we recommend using TypeScript wi
 <img width="517" height="627" alt="image" src="https://github.com/user-attachments/assets/3140bb7a-c547-49db-a02a-14ce1f650a8e" />
 <img width="632" height="404" alt="image" src="https://github.com/user-attachments/assets/4801d406-c1c7-457f-a2e7-1a3fae04ab69" />
 
+## Lint
+<img width="552" height="84" alt="image" src="https://github.com/user-attachments/assets/03f5c5d9-e0f8-4cf9-9d0a-d7c0cab03853" />
+
 ## Prod Build
 <img width="547" height="312" alt="image" src="https://github.com/user-attachments/assets/50539e50-36f7-456d-9ba5-ec9529594615" />
 
