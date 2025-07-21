@@ -12,7 +12,6 @@ function Favourites() {
   const { isLoading } = state;
   const favouriteGames = getFavouriteGames(state);
 
-
   const { paginatedGames, isLoadLimitReached, loadMore } =
     useInfiniteLoad(favouriteGames);
 
