@@ -69,9 +69,12 @@ export function GamesContextProvider({ children }) {
 
   // Load games from JSON
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const loadGames = async () => {
       try {
-        const res = await fetch("/games.json");
+        const res = await fetch("/games.json", { signal });
         const data = await res.json();
         const structuredData = Object.values(data);
 
@@ -95,6 +98,10 @@ export function GamesContextProvider({ children }) {
     };
 
     loadGames();
+
+    return () => {
+      controller.abort(); // Cancel the fetch on cleanup
+    };
   }, []);
 
   // Load favourites from localStorage
