@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 function Heart({ className, onClick }) {
   return (
     <div
@@ -9,4 +11,4 @@ function Heart({ className, onClick }) {
   );
 }
 
-export default Heart;
+export default memo(Heart);

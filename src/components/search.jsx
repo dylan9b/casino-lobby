@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import GamesContext from "../context/GamesProvider";
 import { GameActions } from "../context/Game-actions-constants";
@@ -87,4 +87,4 @@ function Search() {
   );
 }
 
-export default Search;
+export default memo(Search);

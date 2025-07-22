@@ -1,11 +1,11 @@
-import { useContext, useMemo } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import GamesContext from "../context/GamesProvider";
 import { GameActions } from "../context/Game-actions-constants";
 
 function useInfiniteLoad(games = []) {
   const { state, dispatch } = useContext(GamesContext);
 
-  const loadMore = () => {
+  const loadMore = useCallback(() => {
     dispatch({
       type: GameActions.SET_FILTER,
       payload: { offset: state.filter.offset + state.filter.first },
@@ -17,7 +17,7 @@ function useInfiniteLoad(games = []) {
         behavior: "smooth",
       });
     }, 0);
-  };
+  }, [dispatch, state.filter.first, state.filter.offset]);
 
   const filteredGames = useMemo(() => {
     if (!state.filter.searchTerm) return games;

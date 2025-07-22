@@ -1,24 +1,9 @@
 import { Link } from "react-router-dom";
 import Heart from "./UI/Heart";
-import { useContext } from "react";
-import GamesContext from "../context/GamesProvider";
-import { GameActions } from "../context/Game-actions-constants";
-import { toast, ToastContainer } from "react-toastify";
+import useToggleFavourite from "../hooks/useToggleFavourite";
 
 function GameItems({ games }) {
-  const { dispatch } = useContext(GamesContext);
-
-  const handleOnToggleFav = (e, game) => {
-    e.preventDefault();
-    dispatch({ type: GameActions.TOGGLE_FAV, payload: game.slug });
-
-    const toastMessage = `${
-      game.isFavourite
-        ? "Game removed from favourites"
-        : "Game added to favourites"
-    }`;
-    toast.success(toastMessage);
-  };
+  const toggleFav = useToggleFavourite();
 
   return (
     <section className="w-full gap-4 grid grid-cols-[repeat(auto-fill,_minmax(15em,_1fr))]">
@@ -36,7 +21,7 @@ function GameItems({ games }) {
           </Link>
 
           <Heart
-            onClick={(e) => handleOnToggleFav(e, game)}
+            onClick={toggleFav(game)}
             className={`absolute top-4 right-4 ${
               game?.isFavourite ? "text-red-400" : "text-slate-400"
             }`}

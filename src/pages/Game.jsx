@@ -3,27 +3,16 @@ import BackButton from "../components/UI/BackButton";
 import Heart from "../components/UI/Heart";
 import GamesContext from "../context/GamesProvider";
 import { useContext } from "react";
-import { GameActions } from "../context/Game-actions-constants";
 import { getGameBySlug } from "../context/Selectors";
-import { toast } from "react-toastify";
+import useToggleFavourite from "../hooks/useToggleFavourite";
 
 function Game() {
   const { slug } = useParams();
-  const { state, dispatch } = useContext(GamesContext);
+  const { state } = useContext(GamesContext);
 
   const game = getGameBySlug(state, slug);
 
-  const handleOnToggleFav = (e, slug) => {
-    e.preventDefault();
-    dispatch({ type: GameActions.TOGGLE_FAV, payload: slug });
-
-    const toastMessage = `${
-      game.isFavourite
-        ? "Game removed from favourites"
-        : "Game added to favourites"
-    }`;
-    toast.success(toastMessage);
-  };
+  const toggleFav = useToggleFavourite();
 
   return (
     <div className="flex flex-col items-center justify-center gap-8 relative">
@@ -50,7 +39,7 @@ function Game() {
 
             <div className="flex items-center gap-8">
               <Heart
-                onClick={(e) => handleOnToggleFav(e, game.slug)}
+                onClick={toggleFav(game)}
                 className={`${
                   game?.isFavourite ? "text-red-400" : "text-slate-400"
                 }`}

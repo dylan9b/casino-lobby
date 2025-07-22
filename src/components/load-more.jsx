@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 function LoadMore({ isLoadLimitReached, loadMore }) {
   return (
     <button
@@ -16,4 +18,4 @@ function LoadMore({ isLoadLimitReached, loadMore }) {
   );
 }
 
-export default LoadMore;
+export default memo(LoadMore);
